@@ -22,6 +22,10 @@
 #' @param tip_labels_italics (logical; FALSE) Italicize tip labels?
 #' @param tip_labels_remove_underscore (logical; TRUE) Remove underscores from
 #' tip labels?
+#' @param tip_labels_formatted (logical; FALSE) Do the tip labels contain 
+#' manually added formatting information? Will set parse = TRUE in geom_text()
+#' and associated functions to interpret formatting. See ?plotmath for more.
+#' Cannot be TRUE if tip_labels_italics = TRUE.  
 #' @param tip_labels_states (logical; FALSE) Optional plotting of text at tips
 #' in addition
 #' to taxa labels.
@@ -92,8 +96,9 @@
 #' @param time_bars (logical; timeline) Add vertical gray bars to indicate
 #' geological timeline units if geo == TRUE or regular time intervals (in MYA)
 #' if geo == FALSE.
-#' @param geo_units (list; list("epochs", "periods")) Which geological units
-#' to include in the geo timescale.
+#' @param geo_units (list; list("epochs", "periods")) Which geological units to
+#' include in the geo timescale. May be "periods", "epochs", "stages", "eons", 
+#' "eras", or a list of two of those units.
 #' @param ... (various) Additional arguments passed to ggtree::ggtree().
 #'
 #' @return A ggplot object
@@ -113,11 +118,11 @@
 #'                                              "3" = "Cool!"))
 #'
 #' # have states vary by color and indicate state pp with size (default)
-#' plotAncStatesMAP(t = example, tip_labels_italics = TRUE)
+#' plotAncStatesMAP(t = example)
 #'
 #' # have states vary by color and indicate state pp with size ,
 #' # and add a timeline
-#' plotAncStatesMAP(t = example, tip_labels_italics = TRUE, timeline = TRUE)
+#' plotAncStatesMAP(t = example, timeline = TRUE)
 #'
 #' # have states vary by color and symbol, label nodes with pp of states
 #' plotAncStatesMAP(t = example,  node_shape_as = "state",
@@ -134,17 +139,6 @@
 #' # default with circular tree
 #' plotAncStatesMAP(t = example, tree_layout = "circular")
 #'
-#' # default with 'ape' tree layout, note that you may have to
-#' # manually adjust the axes limits
-#' # we recommend setting tip_labels_offset to 0
-#'
-#' p <- plotAncStatesMAP(t = example,
-#'                       tree_layout = "ape",
-#'                       tip_labels_offset = 0)
-#'
-#' tree_height <- max(phytools::nodeHeights(example@phylo))
-#' p + ggplot2::xlim(-tree_height/3, tree_height*2) +
-#'     ggplot2::ylim(-tree_height/3, tree_height*2)
 #'
 #' # Chromosome evolution example
 #'
@@ -188,6 +182,7 @@ plotAncStatesMAP <- function(t,
                              tip_labels_size = 2,
                              tip_labels_offset = 1,
                              tip_labels_italics = FALSE,
+                             tip_labels_formatted = FALSE,
                              tip_labels_remove_underscore = TRUE,
 
                              # label states at tips
@@ -227,7 +222,7 @@ plotAncStatesMAP <- function(t,
 
                              ...) {
   ##### parameter compatability checks! #####
-  if (class(t) != "treedata")
+  if (!methods::is(t, "treedata"))
     stop("t should be a treedata objects")
   if (is.logical(cladogenetic) == FALSE)
     stop("cladogenetic should be TRUE or FALSE")
@@ -239,6 +234,10 @@ plotAncStatesMAP <- function(t,
     stop("tip_labels_offset should be a number")
   if (is.logical(tip_labels_italics) == FALSE)
     stop("tip_labels_italics should be TRUE or FALSE")
+  if (is.logical(tip_labels_formatted) == FALSE)
+    stop("tip_labels_formatted should be TRUE or FALSE")
+  if (tip_labels_italics == TRUE & tip_labels_formatted == TRUE) 
+    stop("tip_labels_italics and tip_labels_formatted may not both be TRUE")
   if (is.logical(tip_labels_remove_underscore) == FALSE)
     stop("tip_labels_remove_underscore should be TRUE or FALSE")
   if (is.logical(tip_labels_states) == FALSE)
@@ -327,26 +326,30 @@ plotAncStatesMAP <- function(t,
   if (is.list(geo_units)) {
     if (length(geo_units) != 2)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[1]] != "epochs" &
-        geo_units[[1]] != "periods")
+    if (geo_units[[1]] %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
-    if (geo_units[[2]] != "epochs" &
-        geo_units[[2]] != "periods")
+    if (geo_units[[2]] %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras')  == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   } else {
-    if (geo_units != "epochs" &
-        geo_units != "periods")
+    if (geo_units %in% 
+        c('periods', 'epochs', 'stages', 'eons', 'eras') == FALSE)
       stop(
-        "geo_units should be 'epochs', 'periods' or a list of both:
+        "geo_units should be 'periods', 'epochs', 'stages', 'eons', 
+         'eras', or a list of two of those units, such as:
         list('epochs','periods')"
       )
   }
@@ -381,9 +384,12 @@ plotAncStatesMAP <- function(t,
         p$data$node_color_as <-
           dplyr::pull(p$data, paste0(state_pos_str_base[1], "1"))
       }
-      # double check levels are alphabetical
-      levels(p$data$node_color_as) <-
-        sort(levels(p$data$node_color_as))
+      # double check levels are alphabetical (if not numeric)
+      if (suppressWarnings(any(is.na(as.integer(levels(p$data$node_color_as)))))) {
+        levels(p$data$node_color_as) <-
+          sort(levels(p$data$node_color_as))
+      }
+
     }
     if (node_color_as == "node_posterior") {
       p$data$node_color_as <- as.numeric(p$data$posterior)
@@ -397,8 +403,12 @@ plotAncStatesMAP <- function(t,
 
   if (is.null(node_size_as) == FALSE) {
     if (node_size_as == "state") {
-      p$data$node_size_as <-
-        as.integer(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))
+      size_tmp <- dplyr::pull(p$data, paste0(state_pos_str_base[1], "1"))
+      if (is.factor(size_tmp)) {
+        p$data$node_size_as <- as.integer(levels(size_tmp))[size_tmp]
+      } else {
+        p$data$node_size_as <- as.integer(size_tmp)
+      }
     }
     if (node_size_as == "node_posterior") {
       p$data$node_size_as <- as.numeric(p$data$posterior)
@@ -412,6 +422,7 @@ plotAncStatesMAP <- function(t,
 
   if (is.null(node_shape_as) == FALSE) {
     if (node_shape_as == "state") {
+
       p$data$node_shape_as <-
         factor(dplyr::pull(p$data, paste0(state_pos_str_base[1], "1")))
     }
@@ -436,6 +447,11 @@ plotAncStatesMAP <- function(t,
           p$data$clado_node_color_as <-
             dplyr::pull(p$data, paste0(state_pos_str_base[2], "1"))
         }
+
+        if (suppressWarnings(any(is.na(as.integer(levels(p$data$clado_node_color_as)))))) {
+          levels(p$data$clado_node_color_as) <-
+            sort(levels(p$data$clado_node_color_as))
+        }
       }
       if (node_color_as == "node_posterior") {
         p$data$clado_node_color_as <- 1
@@ -449,8 +465,12 @@ plotAncStatesMAP <- function(t,
 
     if (is.null(node_size_as) == FALSE) {
       if (node_size_as == "state") {
-        p$data$clado_node_size_as <-
-          as.integer(dplyr::pull(p$data, paste0(state_pos_str_base[2], "1")))
+        clado_size_tmp <- dplyr::pull(p$data, paste0(state_pos_str_base[2], "1"))
+        if (is.factor(clado_size_tmp)) {
+          p$data$clado_node_size_as <- as.integer(levels(clado_size_tmp))[clado_size_tmp]
+        } else {
+          p$data$clado_node_size_as <- as.integer(clado_size_tmp)
+        }
       }
       if (node_size_as == "node_posterior") {
         p$data$clado_node_size_as <- 1
@@ -487,6 +507,7 @@ plotAncStatesMAP <- function(t,
         p$data, paste0(state_pos_str_base[1], "1")
       ))))
   }
+  all_states <- sort(all_states)
 
   ##### color processing and checks #####
   # check if number of states exceeds default color palette options
@@ -528,6 +549,7 @@ plotAncStatesMAP <- function(t,
       )
     }
   }
+
   # set default colors
   if (any(node_color == "default")) {
     if (is.null(node_color_as) == TRUE) {
@@ -748,6 +770,14 @@ plotAncStatesMAP <- function(t,
           offset = tip_labels_offset,
           parse = TRUE
         )
+    }
+    else if (tip_labels_formatted == TRUE ) {
+      p <- p + ggtree::geom_tiplab(
+        ggplot2::aes(label = label),
+        size = tip_labels_size,
+        offset = tip_labels_offset,
+        parse = TRUE
+      )
     } else {
       p <-
         p + ggtree::geom_tiplab(size = tip_labels_size,
@@ -829,11 +859,10 @@ plotAncStatesMAP <- function(t,
     }
 
     # vary tip symbol by size and color
-    # when size is state, color is state, and shape is null
+    # when size is state, color is state or PP, and shape is null
     if (is.null(node_size_as) == FALSE &
         is.null(node_color_as) == FALSE) {
       if (node_size_as == "state" &
-          node_color_as == "state" &
           is.null(node_shape_as) == TRUE) {
         p <- p + ggtree::geom_tippoint(
           ggplot2::aes(size = node_size_as,
@@ -844,7 +873,7 @@ plotAncStatesMAP <- function(t,
       }
     }
   }
-
+  
   # plot symbols at nodes and shoulders
   blank_nodes <-
     is.null(node_color_as) == TRUE &
@@ -1122,6 +1151,7 @@ plotAncStatesMAP <- function(t,
       }
     }
   }
+  
   # add node labels (text)
   if (is.null(node_labels_as) == FALSE) {
     if (node_labels_as == "state") {
