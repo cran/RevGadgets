@@ -1,7 +1,7 @@
 Package: RevGadgets
 Type: Package
 Title: Visualization and Post-Processing of 'RevBayes' Analyses
-Version: 1.1.1
+Version: 1.2.0
 Authors@R: c(
     person("Carrie", "Tribble", 
            email = "ctribble09@gmail.com", 
@@ -16,7 +16,8 @@ Authors@R: c(
     person("Bjorn Tore", "Kopperud", role = "aut"),
     person("Sebastian", "Hohna", role = "aut"),
     person("Nagashima", "Kengo", role = "ctb"),
-    person("Schliep", "Klaus", role = "ctb")
+    person("Schliep", "Klaus", role = "ctb"),
+    person("Ronja J.", "Billenstein", role = "aut")
     )
 Maintainer: Carrie Tribble <ctribble09@gmail.com>
 Description: Processes and visualizes the output of complex phylogenetic analyses from the 'RevBayes' phylogenetic graphical modeling software.
@@ -30,14 +31,14 @@ Depends: R (>= 4.2.0)
 biocViews:
 Imports: ape (>= 5.4), phytools (>= 0.7-70), dplyr (>= 1.0.0), ggtree
         (>= 3.6.1), tidytree (>= 0.3.4), treeio (>= 1.12.0), ggplot2
-        (>= 3.4.0), reshape (>= 0.8.8), methods (>= 4.1.0), ggthemes
-        (>= 4.2.0), tidyr (>= 1.1.0), tibble (>= 3.0.1), gginnards (>=
-        0.0.3), ggplotify (>= 0.0.5), ggpp, ggimage, png (>= 0.1-7),
-        stats (>= 4.0.1), utils (>= 4.0.1), grDevices (>= 4.0.1),
-        deeptime (>= 0.1.0), scales (>= 1.1.1)
+        (>= 3.4.0), reshape (>= 0.8.8), methods (>= 4.1.0), tidyr (>=
+        1.1.0), tibble (>= 3.0.1), gginnards (>= 0.0.3), ggplotify (>=
+        0.0.5), ggpp, ggimage, png (>= 0.1-7), stats (>= 4.0.1), utils
+        (>= 4.0.1), grDevices (>= 4.0.1), deeptime (>= 0.1.0), scales
+        (>= 1.1.1)
 Suggests: testthat, knitr, rmarkdown, phangorn
 NeedsCompilation: no
-Packaged: 2023-05-24 20:04:29 UTC; carrietribble
+Packaged: 2023-11-15 19:22:09 UTC; carrietribble
 Author: Carrie Tribble [aut, cre] (<https://orcid.org/0000-0001-7263-7885>),
   Michael R. May [aut],
   William A. Freyman [aut],
@@ -48,6 +49,7 @@ Author: Carrie Tribble [aut, cre] (<https://orcid.org/0000-0001-7263-7885>),
   Bjorn Tore Kopperud [aut],
   Sebastian Hohna [aut],
   Nagashima Kengo [ctb],
-  Schliep Klaus [ctb]
+  Schliep Klaus [ctb],
+  Ronja J. Billenstein [aut]
 Repository: CRAN
-Date/Publication: 2023-05-25 07:40:11 UTC
+Date/Publication: 2023-11-16 22:04:02 UTC
