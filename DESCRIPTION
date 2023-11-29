@@ -1,7 +1,7 @@
 Package: RevGadgets
 Type: Package
 Title: Visualization and Post-Processing of 'RevBayes' Analyses
-Version: 1.2.0
+Version: 1.2.1
 Authors@R: c(
     person("Carrie", "Tribble", 
            email = "ctribble09@gmail.com", 
@@ -38,7 +38,7 @@ Imports: ape (>= 5.4), phytools (>= 0.7-70), dplyr (>= 1.0.0), ggtree
         (>= 1.1.1)
 Suggests: testthat, knitr, rmarkdown, phangorn
 NeedsCompilation: no
-Packaged: 2023-11-15 19:22:09 UTC; carrietribble
+Packaged: 2023-11-29 20:17:15 UTC; carrietribble
 Author: Carrie Tribble [aut, cre] (<https://orcid.org/0000-0001-7263-7885>),
   Michael R. May [aut],
   William A. Freyman [aut],
@@ -52,4 +52,4 @@ Author: Carrie Tribble [aut, cre] (<https://orcid.org/0000-0001-7263-7885>),
   Schliep Klaus [ctb],
   Ronja J. Billenstein [aut]
 Repository: CRAN
-Date/Publication: 2023-11-16 22:04:02 UTC
+Date/Publication: 2023-11-29 20:30:02 UTC

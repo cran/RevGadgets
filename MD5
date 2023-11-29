@@ -1,6 +1,6 @@
-80a4f096663405b60236eb8a00205b6b *DESCRIPTION
+b686032addcb63a08a2ef83a768040c9 *DESCRIPTION
 36da94dd2512f8992d4b636d1e5f2831 *NAMESPACE
-8dcdc930ce0a2e04c24452dab3bca171 *NEWS.md
+580d27d3b4b93ad8e470704c4ca8eb57 *NEWS.md
 da9f65298c2b61db1e4721df4487903f *R/RevGadgets.R
 8fc46d7c590a341cb55a33c9961ee450 *R/calculateShiftBayesFactor.R
 d45599cd754bce7bbea499619efaf8f9 *R/colFun.R
@@ -65,7 +65,7 @@ f154610bb2d43cace68631b242105c1f *inst/extdata/graphs/plotDiversityOBDP_df.rds
 8e175a398dc9f14ab4356277e5ef738f *inst/extdata/graphs/plotHiSSE_df.rds
 6d0afec2cff49bc7c1dca8ca6b053f6d *inst/extdata/graphs/plotMassExtinctions_df.rds
 2409f80ee835a9297629fe82818d294f *inst/extdata/graphs/plotMuSSE_df.rds
-0e077684664e0dced39ad03eca1346ea *inst/extdata/graphs/plotPopSizes.rds
+c1a63e0dd713e8cfde1fcdbc7b4dc73f *inst/extdata/graphs/plotPopSizes.rds
 09cd2448e835c9fcb1850ca0532958e9 *inst/extdata/graphs/plotPostPredStats_df.rds
 ef8138f2ebf9cfee930807f5412e67a4 *inst/extdata/graphs/plotTrace_df.rds
 2691ec0a3698c9991a8fb97b2f5d7b15 *inst/extdata/graphs/plotTree_df.rds
@@ -138,7 +138,7 @@ b1fe5c7f02771ecb8808d5f8b2b53ce1 *tests/testthat/test_plotAncStatesMAP.R
 50f576e430c14427cf56d465e18b793e *tests/testthat/test_plotHiSSE.R
 0252875588adb9aeb9b0dcbc8550793d *tests/testthat/test_plotMassExtinctions.R
 361e8667bb39f6aea9e1a00795443815 *tests/testthat/test_plotMuSSE.R
-7e9801fe291492fc5b827c9fab9ebfe7 *tests/testthat/test_plotPopSizes.R
+10380979d491d16481e44b255450b2cf *tests/testthat/test_plotPopSizes.R
 d10773f5ecb9a8e5b6b43985b2abc71b *tests/testthat/test_plotPostPredStats.R
 852ea780f4c69adb1fc06da272b8b65a *tests/testthat/test_plotTrace.R
 a918f39fb3b1aa23be49e2354362cf5e *tests/testthat/test_plotTree.R
